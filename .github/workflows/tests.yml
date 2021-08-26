@@ -499,6 +499,18 @@ jobs:
           skip_existing: true
           packages_dir: wheelhouse/
 
+  manylinux_aarch64:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+      fail-fast: false
+    env:
+      py: /opt/python/${{ matrix.python-version }}/bin/python
+      img: quay.io/pypa/manylinux2014_aarch64
+
+
+
 # TODO:
 # * Use YAML syntax to share snippets, like the old .travis.yml did
 # Sadly, as of 2021-02-01, Github Actions does not support anchors at
