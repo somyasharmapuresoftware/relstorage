@@ -520,7 +520,18 @@ jobs:
         with:
           path: ~/.ccache/
           key: ${{ runner.os }}-ccache_manylinux2-${{ matrix.python-version }}
-      - uses: actions/checkout@v1
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip_manylinux_x8664-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
