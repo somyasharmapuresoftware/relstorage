@@ -483,6 +483,7 @@ jobs:
         env:
           DOCKER_IMAGE: quay.io/pypa/manylinux2010_x86_64:2021-02-06-3d322a5
         run: scripts/releases/make-manylinux
+        
       - name: Upload RelStorage wheels
         uses: actions/upload-artifact@v2
         with:
@@ -534,8 +535,12 @@ jobs:
           source .env/bin/activate && \
           ls scripts/releases && \
           pip install -U pip && \
-          scripts/releases/make-manylinux && \
           deactivate'
+          
+      - name: Build RelStorage
+        env:
+          DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
+        run: scripts/releases/make-manylinux
 
 
 
