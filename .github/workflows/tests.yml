@@ -512,7 +512,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-        
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }} 
+       
       - name: Cache ~/.ccache
         uses: actions/cache@v2
         with:
@@ -522,6 +526,14 @@ jobs:
         id: pip-cache
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
+          
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip_manylinux_aarch64-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
             
       - name: Set up QEMU
         id: qemu
