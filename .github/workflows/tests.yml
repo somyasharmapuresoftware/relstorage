@@ -532,6 +532,7 @@ jobs:
           ${{ env.img }} \
           bash -exc '${{ env.py }} -m venv .env && \
           source .env/bin/activate && \
+          ls scripts/releases && \
           pip install -U pip && \
           scripts/releases/make-manylinux && \
           deactivate'
