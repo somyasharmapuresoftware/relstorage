@@ -499,7 +499,7 @@ jobs:
         env:
           DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
         run: |
-          pip install -y ccache
+          pip install ccache
           scripts/releases/make-manylinux
         
       - name: Upload RelStorage wheels
