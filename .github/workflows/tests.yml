@@ -498,7 +498,9 @@ jobs:
       - name: Build RelStorage aarch64
         env:
           DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
-        run: scripts/releases/make-manylinux
+        run: |
+          pip install -y ccache
+          scripts/releases/make-manylinux
         
       - name: Upload RelStorage wheels
         uses: actions/upload-artifact@v2
