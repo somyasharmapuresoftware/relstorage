@@ -500,8 +500,8 @@ jobs:
           DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
         run: |
           pip install wget
-          wget https://github.com/ccache/ccache/releases/download/v4.4/ccache-4.4-windows-64.zip
-          unzip ccache-4.4-windows-64.zip
+          wget https://download-ib01.fedoraproject.org/pub/epel/7/aarch64/Packages/c/ccache-3.3.4-1.el7.aarch64.rpm
+          rpm -i ccache-3.3.4-1.el7.aarch64.rpm
           scripts/releases/make-manylinux
         
       - name: Upload RelStorage wheels
