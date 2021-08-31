@@ -471,6 +471,14 @@ jobs:
           key: ${{ runner.os }}-pip_manylinux_x8664-${{ matrix.python-version }}
           restore-keys: |
             ${{ runner.os }}-pip-
+            
+      - name: pip cache aarch64
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip_manylinux_aarch64-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Update pip
         run: pip install -U pip
