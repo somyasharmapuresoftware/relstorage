@@ -492,6 +492,20 @@ jobs:
           DOCKER_IMAGE: quay.io/pypa/manylinux2010_x86_64:2021-02-06-3d322a5
         run: scripts/releases/make-manylinux
         
+      - name: Upload RelStorage wheels
+        uses: actions/upload-artifact@v2
+        with:
+          path: wheelhouse/*whl
+          name: manylinux_x86_64_wheels.zip
+          
+      - name: new
+        run: |
+          ls
+          pwd
+          ls /home/runner/work/relstorage/relstorage/wheelhouse
+          pwd
+          ls /home/runner/work/relstorage/relstorage/wheelhouse*whl
+        
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
@@ -500,17 +514,19 @@ jobs:
           DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
         run: scripts/releases/make-manylinux
         
-      - name: Upload RelStorage wheels
+      - name: Upload RelStorage wheels aarch64
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*whl
-          name: manylinux_x86_64_wheels.zip
+          name: manylinux_aarch_64_wheels.zip
 
       - name: new2
         run: |
           ls
           pwd
           ls /home/runner/work/relstorage/relstorage/wheelhouse
+          pwd
+          ls /home/runner/work/relstorage/relstorage/wheelhouse*whl
 
       - name: Restore pip cache permissions
         run: sudo chown -R $(whoami) ${{ steps.pip-cache.outputs.dir }}
