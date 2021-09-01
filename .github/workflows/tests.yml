@@ -505,7 +505,13 @@ jobs:
         with:
           path: wheelhouse/*whl
           name: manylinux_x86_64_wheels.zip
-          run: ls
+
+      - name: new2
+        run: |
+          ls
+          pwd
+          ls /home/runner/work/relstorage/relstorage/wheelhouse
+
       - name: Restore pip cache permissions
         run: sudo chown -R $(whoami) ${{ steps.pip-cache.outputs.dir }}
       - name: Publish package to PyPI
