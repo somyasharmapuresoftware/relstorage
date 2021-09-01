@@ -503,8 +503,7 @@ jobs:
           ls
           pwd
           ls /home/runner/work/relstorage/relstorage/wheelhouse
-          pwd
-          ls /home/runner/work/relstorage/relstorage/wheelhouse*whl
+          
         
       - name: Set up QEMU
         id: qemu
@@ -525,8 +524,7 @@ jobs:
           ls
           pwd
           ls /home/runner/work/relstorage/relstorage/wheelhouse
-          pwd
-          ls /home/runner/work/relstorage/relstorage/wheelhouse*whl
+
 
       - name: Restore pip cache permissions
         run: sudo chown -R $(whoami) ${{ steps.pip-cache.outputs.dir }}
