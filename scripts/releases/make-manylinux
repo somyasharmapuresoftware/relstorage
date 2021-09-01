@@ -59,7 +59,7 @@ if [ -d /RelStorage -a -d /opt/python ]; then
     then
         yum -y install ccache
         
-    elif [DOCKER_IMAGE == 'quay.io/pypa/manylinux2014_aarch64'];
+    elif [DOCKER_IMAGE_aarch64 == 'quay.io/pypa/manylinux2014_aarch64'];
     then
         pip install wget
         wget https://download-ib01.fedoraproject.org/pub/epel/7/aarch64/Packages/c/ccache-3.3.4-1.el7.aarch64.rpm
