@@ -54,7 +54,7 @@ if [ -d /RelStorage -a -d /opt/python ]; then
     ls -ld /cache
     ls -ld /cache/pip
         
-    if [[$DOCKER_IMAGE == 'quay.io/pypa/manylinux2010_x86_64:2021-02-06-3d322a5']];
+    if [$DOCKER_IMAGE == 'quay.io/pypa/manylinux2010_x86_64:2021-02-06-3d322a5'];
     then
         yum -y install ccache
      else
