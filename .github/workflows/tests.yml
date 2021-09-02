@@ -506,7 +506,10 @@ jobs:
       matrix:
         python-version: [3.9]
       fail-fast: false
-
+    env:
+      py: /opt/python/${{ matrix.python-version }}/bin/python
+      img: quay.io/pypa/manylinux2014_aarch64
+      
     steps:
       - name: checkout
         uses: actions/checkout@v2
