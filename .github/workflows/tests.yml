@@ -555,17 +555,17 @@ jobs:
           DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
         run: scripts/releases/make-manylinux
         
-   #   - name: Upload RelStorage wheels
-    #    uses: actions/upload-artifact@v2
-     #   with:
-      #    path: wheelhouse/*whl
-       #   name: manylinux_aarch_64_wheels.zip
+      - name: Upload RelStorage wheels
+        uses: actions/upload-artifact@v2
+        with:
+          path: wheelhouse/*whl
+          name: manylinux_aarch_64_wheels.zip
           
-    #  - name: new aarch64
-     #   run: |
-     #     ls
-      #    pwd
-       #   ls /home/runner/work/relstorage/relstorage/wheelhouse
+      - name: new aarch64
+        run: |
+          ls
+          pwd
+          ls /home/runner/work/relstorage/relstorage/wheelhouse
 
     #  - name: Restore pip cache permissions
      #   run: sudo chown -R $(whoami) ${{ steps.pip-cache.outputs.dir }}
