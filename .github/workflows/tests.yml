@@ -440,7 +440,7 @@ jobs:
           pip install -U pylint
           python -m pylint --rcfile=.pylintrc relstorage -f parseable -r n
 
-  manylinux_x86_64_aarch_64:
+  manylinux_x86_64:
     runs-on: ubuntu-latest
     # We use a regular Python matrix entry to share as much code as possible.
     strategy:
@@ -471,21 +471,10 @@ jobs:
           key: ${{ runner.os }}-pip_manylinux_x8664-${{ matrix.python-version }}
           restore-keys: |
             ${{ runner.os }}-pip-
-            
-      - name: pip cache aarch64
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ runner.os }}-pip_manylinux_aarch64-${{ matrix.python-version }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       - name: Update pip
         run: pip install -U pip
         
-      - name: Set up QEMU
-        id: qemu
-        uses: docker/setup-qemu-action@v1   
       - name: Build RelStorage
         # An alternate way to do this is to run the container directly with a uses:
         # and then the script runs inside it. That may work better with caching.
@@ -494,16 +483,15 @@ jobs:
         # and only up through the tag 2021-02-06-3d322a5
         env:
           DOCKER_IMAGE: quay.io/pypa/manylinux2010_x86_64:2021-02-06-3d322a5
-          DOCKER_IMAGE_aarch64: quay.io/pypa/manylinux2014_aarch64
         run: scripts/releases/make-manylinux
         
       - name: Upload RelStorage wheels
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*whl
-          name: manylinux_x86_64_aarch_64_wheels.zip
+          name: manylinux_x86_64_wheels.zip
           
-      - name: new2
+      - name: new x86
         run: |
           ls
           pwd
@@ -520,7 +508,52 @@ jobs:
           skip_existing: true
           packages_dir: wheelhouse/
 
-
+  manylinux_x86_aarch64:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+      fail-fast: false
+    env:
+      py: /opt/python/${{ matrix.python-version }}/bin/python
+      img: quay.io/pypa/manylinux2014_aarch64
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }} 
+       
+      - name: Cache ~/.ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache/
+          key: ${{ runner.os }}-ccache_manylinux2-${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+          
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip_manylinux_aarch64-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+        
+      - name: Update pip
+        run: pip install -U pip
+        
+      - name: Build RelStorage
+        env:
+          DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
+        run: scripts/releases/make-manylinux
 
 # TODO:
 # * Use YAML syntax to share snippets, like the old .travis.yml did
