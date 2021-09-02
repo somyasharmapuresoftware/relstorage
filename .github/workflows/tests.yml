@@ -483,7 +483,6 @@ jobs:
         env:
           DOCKER_IMAGE: quay.io/pypa/manylinux2010_x86_64:2021-02-06-3d322a5
         run: scripts/releases/make-manylinux
-        
       - name: Upload RelStorage wheels
         uses: actions/upload-artifact@v2
         with:
@@ -506,7 +505,6 @@ jobs:
       matrix:
         python-version: [3.9]
       fail-fast: false
-      
     steps:
       - name: checkout
         uses: actions/checkout@v2
