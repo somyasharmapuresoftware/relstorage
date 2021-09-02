@@ -499,7 +499,7 @@ jobs:
           skip_existing: true
           packages_dir: wheelhouse/
 
-  manylinux_x86_aarch64:
+  manylinux_aarch_64:
     runs-on: ubuntu-latest
     strategy:
       matrix:
