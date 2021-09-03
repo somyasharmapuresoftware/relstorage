@@ -54,8 +54,8 @@ if [ -d /RelStorage -a -d /opt/python ]; then
     ls -ld /cache
     ls -ld /cache/pip
     
-    if ["$(uname -m)" == "aarch64"]; then
-        pip -y install wget
+    if [ `uname -m` = "aarch64" ] ; then
+        yum -y install wget
         wget https://download-ib01.fedoraproject.org/pub/epel/7/aarch64/Packages/c/ccache-3.3.4-1.el7.aarch64.rpm
         rpm -i ccache-3.3.4-1.el7.aarch64.rpm
     else
