@@ -506,16 +506,7 @@ jobs:
     strategy:
       matrix:
         python-version: [2.7, pypy-2.7-7.3.3, pypy-3.6, 3.6, 3.7, 3.8, 3.9]
-        os: [ubuntu-18.04, macos-latest]
-        exclude:
-          - os: macos-latest
-            python-version: pypy-2.7-7.3.3
-          - os: macos-latest
-            python-version: pypy-3.6
-          - os: macos-latest
-            python-version: 3.5
-          - os: macos-latest
-            python-version: 3.6
+        os: [ubuntu-18.04]
         include:
           - os: ubuntu-20.04
             python-version: 3.8
@@ -537,10 +528,10 @@ jobs:
         with:
           path: ~/.ccache/
           key: ${{ runner.os }}-ccache2-${{ matrix.python-version }}
-      
+
       - name: Set up QEMU
         id: qemu
-        uses: docker/setup-qemu-action@v1     
+        uses: docker/setup-qemu-action@v1
       
       - name: Get pip cache dir
         id: pip-cache
@@ -549,7 +540,7 @@ jobs:
           ${{ env.img }} \
           bash -exc '${{ env.py }} -m venv .env && \
           source .env/bin/activate && \
-          echo "::set-output name=dir::$(pip cache dir)"
+          echo "::set-output name=dir::$(pip cache dir)" && \
           deactivate'
 
       - name: pip cache
@@ -559,6 +550,73 @@ jobs:
           key: ${{ runner.os }}-pip3-${{ matrix.python-version }}
           restore-keys: |
             ${{ runner.os }}-pip3-
+
+      - name: Install native libs
+        uses: ./.github/actions/install-native-libs
+
+      - name: Build mysqlclient
+        if: startsWith( matrix.os, 'ubuntu-20')
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+          ${{ env.img }} \
+          bash -exc '${{ env.py }} -m venv .env && \
+          source .env/bin/activate && \
+          pip install --no-binary :all: mysqlclient && \
+          deactivate'
+
+      - name: Download RelStorage wheel
+        uses: actions/download-artifact@v2
+        with:
+          name: RelStorage-${{ runner.os }}-${{ matrix.python-version }}.whl
+          path: dist/
+
+      - name: Install RelStorage
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+          ${{ env.img }} \
+          bash -exc '${{ env.py }} -m venv .env && \
+          source .env/bin/activate && \
+          pip install -U coverage && \
+          pip install -U 'faulthandler; python_version == "2.7" and platform_python_implementation == "CPython"' && \
+          pip install -U  "`ls dist/RelStorage-*.whl`[test,all_tested_drivers]" && \
+          unzip -n dist/RelStorage-*whl -d src && \
+          deactivate'
+
+      - name: Initialize Test Databases
+        if: startsWith(runner.os, 'macOS')
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+          ${{ env.img }} \
+          bash -exc '${{ env.py }} -m venv .env && \
+          source .env/bin/activate && \
+          brew services start mysql && \
+          brew services start postgresql && \
+          sleep 5 && \
+          brew services list && \
+          RELSTORAGETEST_PG_UNAME=$USER RELSTORAGETEST_PG_DBNAME=postgres .travis/postgres.sh && \
+          deactivate'
+
+      - name: Initialize Test Databases
+        if: startsWith(runner.os, 'Linux')
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+          ${{ env.img }} \
+          bash -exc '${{ env.py }} -m venv .env && \
+          source .env/bin/activate && \
+          sudo systemctl start mysql.service
+          echo Configuring MySQL
+          RELSTORAGETEST_MY_PW="--password=root" .travis/mysql.sh
+          deactivate'
+
+      - name: Run tests and report coverage
+        uses: ./.github/actions/run-tests
+        with:
+          useCoverage: ${{ !startsWith(matrix.python-version, 'pypy')  }}
+      - name: Submit to Coveralls
+        if: ${{ !startsWith(matrix.python-version, 'pypy') && startsWith(runner.os, 'Linux') }}
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel: true
 
 
 
