@@ -505,13 +505,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [2.7, pypy-2.7-7.3.3, pypy-3.6, 3.6, 3.7, 3.8, 3.9]
+        python-version: [3.9]
         os: [ubuntu-18.04]
         include:
           - os: ubuntu-20.04
-            python-version: 3.8
+
     env:
-      py: /opt/python/${{matrix.python-version}}/bin/python
+      py: /opt/python/${{ matrix.python-version }}/bin/python
       img: quay.io/pypa/manylinux2014_aarch64
 
     steps:
@@ -538,7 +538,7 @@ jobs:
         run: |
           docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
           ${{ env.img }} \
-          bash -exc '${{ env.py }} -m venv .env && \
+          bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
           source .env/bin/activate && \
           echo "::set-output name=dir::$(pip cache dir)" && \
           deactivate'
