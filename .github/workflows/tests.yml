@@ -511,7 +511,7 @@ jobs:
           - os: ubuntu-20.04
             python-version: 3.8
     env:
-      py: /opt/python/${{ matrix.python-version }}/bin/python
+      py: /opt/python/${{matrix.python-version}}/bin/python
       img: quay.io/pypa/manylinux2014_aarch64
 
     steps:
