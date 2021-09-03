@@ -437,7 +437,7 @@ jobs:
         # sped things up. It doesn't actually seem to, and it does
         # cause a bunch of false positives, at least in 2.9.3.
         run: |
-          pip install pylint
+          pip install -U pylint
           python -m pylint --rcfile=.pylintrc relstorage -f parseable -r n
 
   manylinux_x86_64:
