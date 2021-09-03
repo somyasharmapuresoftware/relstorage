@@ -540,7 +540,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*whl
-          name: manylinux_aarch_64_wheels.zip
+          name: manylinux2014_aarch64_wheels.zip
       - name: Restore pip cache permissions
         run: sudo chown -R $(whoami) ${{ steps.pip-cache.outputs.dir }}
       - name: Publish package to PyPI
