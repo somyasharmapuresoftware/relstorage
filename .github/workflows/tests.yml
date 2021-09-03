@@ -499,12 +499,11 @@ jobs:
           skip_existing: true
           packages_dir: wheelhouse/
 
-  manylinux_aarch_64:
+  manylinux2014_aarch64:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.9]
-      fail-fast: false
     steps:
       - name: checkout
         uses: actions/checkout@v2
