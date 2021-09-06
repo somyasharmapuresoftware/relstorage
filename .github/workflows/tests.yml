@@ -530,12 +530,8 @@ jobs:
       - name: Build mysqlclient
         if: startsWith( matrix.os, 'ubuntu-20')
         run: |
-          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-          ${{ env.img }} \
-          bash -exc '${{ env.py }} -m venv .env && \
-          source .env/bin/activate && \
-          pip install --no-binary :all: mysqlclient && \
-          deactivate'
+          pip install --no-binary :all: mysqlclient
+
 
       - name: Download RelStorage wheel
         uses: actions/download-artifact@v2
