@@ -91,16 +91,16 @@ jobs:
         python-version: [2.7, pypy-2.7-7.3.3, pypy-3.6, 3.6, 3.7, 3.8, 3.9]
         # ubuntu 18.04 ships with mysql 5.7; ubuntu 20.04 ships with
         # mysql 8.0
-        os: [ubuntu-18.04, macos-latest]
-        exclude:
-          - os: macos-latest
-            python-version: pypy-2.7-7.3.3
-          - os: macos-latest
-            python-version: pypy-3.6
-          - os: macos-latest
-            python-version: 3.5
-          - os: macos-latest
-            python-version: 3.6
+        os: [ubuntu-18.04]
+    #    exclude:
+   #       - os: macos-latest
+    #        python-version: pypy-2.7-7.3.3
+     #     - os: macos-latest
+      #      python-version: pypy-3.6
+     #     - os: macos-latest
+    #        python-version: 3.5
+    #      - os: macos-latest
+    #        python-version: 3.6
         include:
           - os: ubuntu-20.04
             python-version: 3.8
