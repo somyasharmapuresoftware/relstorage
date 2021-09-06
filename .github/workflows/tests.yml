@@ -500,6 +500,40 @@ jobs:
           packages_dir: wheelhouse/
 
 
+
+  build-relstorage-aarch64:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [2.7, pypy-2.7-7.3.3, pypy-3.6, 3.6, 3.7, 3.8, 3.9]
+        os: [ubuntu-18.04]
+        include:
+          - os: ubuntu-20.04
+            python-version: 3.8
+    env:
+      py: /opt/python/${{ matrix.python-version }}/bin/python
+      img: quay.io/pypa/manylinux2014_aarch64
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Install ccache, configure CFLAGS (ubuntu)
+        uses: ./.github/actions/config-cc
+        
+      - name: Cache ~/.ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache/
+          key: ${{ runner.os }}-ccache2-${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+
+
   test_aarch64:
     needs: build-relstorage
     runs-on: ${{ matrix.os }}
