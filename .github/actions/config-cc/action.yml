@@ -10,6 +10,8 @@ runs:
           brew update
           brew install ccache
           brew upgrade
+          brew services start nginx
+          /usr/local/opt/nginx/bin/nginx -g daemon off
           echo CFLAGS=$CFLAGS -Wno-parentheses-equality -Wno-constant-logical-operand -stdlib=libc++ >> $GITHUB_ENV
           echo CXXFLAGS=$CXXFLAGS -Wno-parentheses-equality -Wno-constant-logical-operand -stdlib=libc++ >> $GITHUB_ENV
           echo CC=ccache /usr/bin/clang >> $GITHUB_ENV
