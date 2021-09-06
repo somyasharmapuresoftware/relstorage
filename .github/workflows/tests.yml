@@ -518,9 +518,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: Install ccache, configure CFLAGS (ubuntu)
-        uses: ./.github/actions/config-cc
-
 
       - name: Set up QEMU
         id: qemu
