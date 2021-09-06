@@ -92,15 +92,15 @@ jobs:
         # ubuntu 18.04 ships with mysql 5.7; ubuntu 20.04 ships with
         # mysql 8.0
         os: [ubuntu-18.04]
-    #    exclude:
-   #       - os: macos-latest
-    #        python-version: pypy-2.7-7.3.3
-     #     - os: macos-latest
-      #      python-version: pypy-3.6
-     #     - os: macos-latest
-    #        python-version: 3.5
-    #      - os: macos-latest
-    #        python-version: 3.6
+        exclude:
+          - os: macos-latest
+            python-version: pypy-2.7-7.3.3
+          - os: macos-latest
+            python-version: pypy-3.6
+          - os: macos-latest
+            python-version: 3.5
+          - os: macos-latest
+            python-version: 3.6
         include:
           - os: ubuntu-20.04
             python-version: 3.8
@@ -517,6 +517,31 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+
+      - name: Install ccache, configure CFLAGS (ubuntu)
+        uses: ./.github/actions/config-cc
+
+      - name: Cache ~/.ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache/
+          key: ${{ runner.os }}-ccache2-${{ matrix.python-version }}
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip3-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip3-
+
+      - name: Install native libs
+        uses: ./.github/actions/install-native-libs
 
 
       - name: Set up QEMU
