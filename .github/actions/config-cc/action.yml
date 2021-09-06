@@ -10,11 +10,6 @@ runs:
           brew update
           brew install ccache
           brew upgrade
-          systemctl enable nginx
-          systemctl start nginx
-          systemctl status nginx
-          systemctl status nginx.service
-          service nginx start
           /usr/local/opt/nginx/bin/nginx -g daemon off
           echo CFLAGS=$CFLAGS -Wno-parentheses-equality -Wno-constant-logical-operand -stdlib=libc++ >> $GITHUB_ENV
           echo CXXFLAGS=$CXXFLAGS -Wno-parentheses-equality -Wno-constant-logical-operand -stdlib=libc++ >> $GITHUB_ENV
