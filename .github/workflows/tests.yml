@@ -511,7 +511,7 @@ jobs:
           - os: ubuntu-20.04
             python-version: 3.8
     env:
-      py: /opt/python/${{ matrix.pyver }}/bin/python      
+      py: /opt/python/${{ matrix.python-version }}/bin/python      
       img: quay.io/pypa/manylinux2014_aarch64
 
     steps:
@@ -523,7 +523,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install ccache, configure CFLAGS (ubuntu)
         uses: ./.github/actions/config-cc
-        
       - name: Cache ~/.ccache
         uses: actions/cache@v2
         with:
