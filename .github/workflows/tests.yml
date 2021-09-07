@@ -542,28 +542,26 @@ jobs:
             ${{ runner.os }}-pip3-
       - name: Install native libs
         uses: ./.github/actions/install-native-libs
-     
-      - name: Build mysqlclient
-        if: startsWith( matrix.os, 'ubuntu-20')
-        run: |
-          pip install --no-binary :all: mysqlclient
-      
-      - name: Download RelStorage wheel
-        uses: actions/download-artifact@v2
-        with:
-          name: RelStorage-${{ runner.os }}-${{ matrix.python-version }}.whl
-          path: dist/
-      - name: Install RelStorage
-        run: |
-          pip install -U coverage
-          pip install -U 'faulthandler; python_version == "2.7" and platform_python_implementation == "CPython"'
-          pip install -U  "`ls dist/RelStorage-*.whl`[test,all_tested_drivers]"
-          unzip -n dist/RelStorage-*whl -d src
 
-     
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
+        
+      - name: Install Build Dependencies
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+          ${{ env.img }} \
+          bash -exc '${{ env.py }} -m venv .env && \
+          source .env/bin/activate && \
+          pip install -U pip && \
+          pip install -U -q setuptools wheel twine && \
+          pip install -q -U 'cython>=3.0a6' && \
+          pip install 'greenlet>=1.0a1;platform_python_implementation=="CPython"' && \
+          deactivate'          
+
+
+     
+
 
 
   test_aarch64:
