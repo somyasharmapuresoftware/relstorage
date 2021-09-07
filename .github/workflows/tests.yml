@@ -543,6 +543,11 @@ jobs:
       - name: Install native libs
         uses: ./.github/actions/install-native-libs
      
+      - name: Build mysqlclient
+        if: startsWith( matrix.os, 'ubuntu-20')
+        run: |
+          pip install --no-binary :all: mysqlclient
+     
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
