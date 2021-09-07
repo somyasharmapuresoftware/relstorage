@@ -547,6 +547,19 @@ jobs:
         if: startsWith( matrix.os, 'ubuntu-20')
         run: |
           pip install --no-binary :all: mysqlclient
+      
+      - name: Download RelStorage wheel
+        uses: actions/download-artifact@v2
+        with:
+          name: RelStorage-${{ runner.os }}-${{ matrix.python-version }}.whl
+          path: dist/
+      - name: Install RelStorage
+        run: |
+          pip install -U coverage
+          pip install -U 'faulthandler; python_version == "2.7" and platform_python_implementation == "CPython"'
+          pip install -U  "`ls dist/RelStorage-*.whl`[test,all_tested_drivers]"
+          unzip -n dist/RelStorage-*whl -d src
+
      
       - name: Set up QEMU
         id: qemu
