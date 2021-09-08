@@ -508,9 +508,7 @@ jobs:
         python-version: [2.7, pypy-2.7-7.3.3, pypy-3.6, 3.6, 3.7, 3.8, 3.9]
         pyver: ['cp36-cp36m', 'cp37-cp37m', 'cp38-cp38', 'cp39-cp39']
         os: [ubuntu-18.04]
-        include:
-          - os: ubuntu-20.04
-            python-version: 3.8
+
     env:
       py: /opt/python/${{ matrix.pyver }}/bin/python      
       img: quay.io/pypa/manylinux2014_aarch64
