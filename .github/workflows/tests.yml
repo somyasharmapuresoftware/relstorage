@@ -554,7 +554,7 @@ jobs:
           name: RelStorage-aarch64-${{ runner.os }}-${{ matrix.python-version }}.whl
           path: dist/*whl
           
-  test-aarch64:
+  test_aarch64:
     needs: build-relstorage-aarch64
     runs-on: ${{ matrix.os }}
     strategy:
