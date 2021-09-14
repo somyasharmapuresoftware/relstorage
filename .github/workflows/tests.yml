@@ -607,39 +607,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: ['cp36-cp36m', 'cp37-cp37m', 'cp38-cp38', 'cp39-cp39']
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Cache ~/.ccache
-        uses: actions/cache@v2
-        with:
-          path: ~/.ccache/
-          key: ${{ runner.os }}-ccache_manylinux2-${{ matrix.python-version }}
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
-      - name: pip cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ runner.os }}-pip_manylinux_aarch64-${{ matrix.python-version }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
-      - name: Update pip
-        run: pip install -U pip
       - name: Build RelStorage
         env:
           DOCKER_IMAGE: quay.io/pypa/manylinux2014_aarch64
-        run: scripts/releases/make-manylinux
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+          ${{ env.img }} \
+          bash -exc '${{ env.py }} -m venv .env && \
+          source .env/bin/activate && \
+          echo "Get pip cache dir" && \
+          echo "::set-output name=dir::$(pip cache dir)" && \
+          echo "Update pip" && \
+          pip install -U pip && \
+          echo "Build relstorage" && \
+          yum -y install wget && \
+          wget https://download-ib01.fedoraproject.org/pub/epel/7/aarch64/Packages/c/ccache-3.3.4-1.el7.aarch64.rpm && \
+          rpm -i ccache-3.3.4-1.el7.aarch64.rpm && \
+          deactivate'
+
       - name: Upload RelStorage wheels
         uses: actions/upload-artifact@v2
         with:
