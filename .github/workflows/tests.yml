@@ -615,6 +615,24 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+        
+      - name: Cache ~/.ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache/
+          key: ${{ runner.os }}-ccache_manylinux2-${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip_manylinux_x8664-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1
@@ -641,6 +659,9 @@ jobs:
         with:
           path: wheelhouse/*whl
           name: manylinux2014_aarch64_wheels.zip
+
+      - name: Restore pip cache permissions
+        run: sudo chown -R $(whoami) ${{ steps.pip-cache.outputs.dir }}
 
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@v1.4.1
